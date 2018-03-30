@@ -6,6 +6,7 @@
 #include <vector>
 #include <string>
 #include <fstream>
+#include "tools.h"
 
 using Eigen::MatrixXd;
 using Eigen::VectorXd;
@@ -66,7 +67,24 @@ public:
 
   ///* Sigma point spreading parameter
   double lambda_;
+  
+  // sigma points matrix columns
+  int n_sig_;
 
+  ///* Sigma point spreading parameter
+  double lambda_aug_;
+  
+  // ADDED VARS
+  
+  ///* Noise matrices
+  MatrixXd R_radar_;
+  MatrixXd R_lidar_;
+
+  ///* the current NIS for radar
+  double NIS_radar_;
+
+  ///* the current NIS for laser
+  double NIS_laser_;
 
   /**
    * Constructor
@@ -77,6 +95,11 @@ public:
    * Destructor
    */
   virtual ~UKF();
+  
+  /**
+   * NormalizeAngle
+   */
+  void NormalizeAngle(double *angle);
 
   /**
    * ProcessMeasurement
@@ -90,6 +113,11 @@ public:
    * @param delta_t Time between k and k+1 in s
    */
   void Prediction(double delta_t);
+  
+  /**
+   * Common UKF module
+   */
+  void UpdateUKF(MeasurementPackage meas_package, MatrixXd Zsig, int n_z);
 
   /**
    * Updates the state and the state covariance matrix using a laser measurement
